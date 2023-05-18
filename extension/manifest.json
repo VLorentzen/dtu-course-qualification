@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "Course Qualification",
+  "description": "Add course qualifications recieved when completing a course to kurser.dtu.dk courses",
+  "version": "1.0",
+  "action": {
+    "default_popup": "hello.html",
+    "default_icon": "images/Lightsaber.png"
+  },
+  "content_scripts": [
+    {
+      "js": ["scripts/content.js"],
+      "matches": [
+        "https://developer.chrome.com/docs/extensions/*",
+        "https://developer.chrome.com/docs/webstore/*"
+      ]
+    }
+  ]
+}
