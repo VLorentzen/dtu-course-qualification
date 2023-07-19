@@ -2,3 +2,5 @@ bs4
 urllib3
 requests
 tqdm
+selenium
+alive_progress

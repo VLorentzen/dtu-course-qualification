@@ -1,19 +1,23 @@
 {
-  "manifest_version": 3,
-  "name": "Course Qualification",
-  "description": "Add course qualifications recieved when completing a course to kurser.dtu.dk courses",
+  "manifest_version": 2,
+  "name": "DTU Course Qualification",
+  "description": "Shows courses the current course is a prerequisite for",
   "version": "1.0",
-  "action": {
-    "default_popup": "hello.html",
-    "default_icon": "images/Lightsaber.png"
-  },
   "content_scripts": [
     {
-      "js": ["scripts/content.js"],
-      "matches": [
-        "https://developer.chrome.com/docs/extensions/*",
-        "https://developer.chrome.com/docs/webstore/*"
-      ]
+      "js": ["js/jquery.js","contentscript.js"],
+      "matches": ["http://kurser.dtu.dk/course/*", "https://kurser.dtu.dk/course/*"]
     }
-  ]
+  ],
+
+  "web_accessible_resources": ["db/data.js","contentscript.js"],
+
+  "background": {
+    "scripts": ["js/jquery.js", "/db/data.js", "background.js"],
+    "persistent": false
+  },
+
+  "browser_action": {
+    "default_icon": "icons/icon_1.png"
+  }
 }
