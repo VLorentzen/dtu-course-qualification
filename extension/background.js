@@ -5,25 +5,49 @@ https://github.com/SMKIDRaadet/dtu-course-analyzer/blob/master/README.md
 
 Date: 19/07-2023
 */
-chrome.runtime.onMessage.addListener(parseMessage);
+
+//importScripts('js/jquery.js');
+import { data } from './db/data.js'
+
+console.log("runnung");
+chrome.runtime.onMessage.addListener(parseMessage); // FFROM MANIFEST V2
+console.log("got passed message");
+//chrome.runtime.onActivated.addListener(parseMessage); // MANIFEST V3
+
 
 function parseMessage(request, sender, sendResponse) {
 	let course=request.getInfo
 	let rtab=sender.tab.id
 	
+	console.log();
 	var resp={};
 	if(course in data){
 		resp[course]=data[course]
+
+		//chrome.storage.local.set(data[course]);
 	} else{
 		resp[course]=false
+		//chrome.storage.local.set(data[course]);
 	}
-	
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		chrome.tabs.sendMessage(rtab, resp);
+	console.log("parsing message:", resp);
+	chrome.tabs.query({active: true, lastFocusedWindow: true}, async function(tabs) {
+		//const {data} = await chrome.storage.local.get(["data"])
+		chrome.tabs.sendMessage(rtab,resp);
+		
+		//chrome.runtime.sendMessage(rtab, resp);
 	});
+	console.log("parsed message");
 }
 
 /*
-chrome.browserAction.onClicked.addListener(function(tab) {
+chrome.action.onActivated.addListener((tab) => {
+	chrome.scripting.executeScript({
+	  target: {tabId: tab.id},
+	  files: ['contentscript.js']
+	});
+  });
+*/
+
+chrome.action.onClicked.addListener(function(tab) {
 	chrome.tabs.create({ url: chrome.runtime.getURL('db.html') });
-});*/
+});
