@@ -53,15 +53,18 @@ function presentData(data) {
     for (i = 0; i < outputArr.length; i++) {
       key = outputArr[i][1];
       val = data[key];
+      //courseNames = data['English title'];
 
-      if (true) {// typeof val != "undefined" && !isNaN(val) && outputArr[i][3] != []
-        addRow(
+      console.log("Checking if list is empty... ");
+      console.log(val.length);
+      console.log("Here's what's in val...");
+      console.log(val);
+
+      if (val.length >= 1) {// typeof val != "undefined" && !isNaN(val) && outputArr[i][3] != []
+        addRowWithHref(
           $("<span/>", { text: outputArr[i][0] }),
-          val.join(", ")
-          //val.join(', '),
-          //outputArr[i][2],
-          //true,
-          //outputArr[i][3]
+          val,
+          courseName
         );
       }
     }
@@ -72,7 +75,7 @@ function presentData(data) {
     $("<a/>", {
       href: "https://github.com/Extrillo/dtu-course-qualification/tree/main",
       target: "_blank",
-    }).append($("<label/>", { text: "help" }))
+    }).append($("<label/>", { text: "help..." }))
   );
 }
   
@@ -103,42 +106,32 @@ function addRow(
     tdIndex++;
   }
 
-/*
-
-  function PrintCoursesHTML(value){
-    element = $("<a/>", {
-      href: "http://kurser.dtu.dk/course/".concat(value),
-      target: "_blank",
-      text: value.concat(" ")
-      }
-    )//.append($("<label/>", { text: value.concat(" ") }))    
-    return element;
-  }
-
-function addRowHyperlink(
+  function addRowWithHref(
     td1Elem,
     td2val = "",
-    unitText = "",
-    colored = false,
+    courseName = "",
+    colored = true,
     maxValue = 1
-  ) {
-    id = "dca-td-" + tdIndex;
+    ) 
+    {
+      id = "dca-td-" + tdIndex;
+      temp = $("<td/>")
+      for (i = 0; i < td2val.length; i++) {
+        temp.append($("<a/>", { id: id, text: td2val[i], href: "https://kurser.dtu.dk/course/" + td2val[i] }))
+        if (i < td2val.length -1 ){
+          temp.append($("<span/>",{text:", "}))
+        }
+      }
 
-    td2Elem = [];
-    for (element in td2val){
-      td2Elem.append(PrintCourseHTML(td2val));
-    }
-    $("#DTU-Course-Qualification").append(
-      $("<tr/>")
+      $("#DTU-Course-Qualification").append(
+        $("<tr/>")
         .append($("<td/>").append($("<b/>").append(td1Elem)))
-        //.append($("<td/>").append($("<span/>", { id: id, text: td2val + unitText }))
-        //.append($("<td/>").append(td2Elem))
-        .append($("<td/>").append($("<b/>").append(td2Elem.join())))
-    );
-  
-    if (colored) {
-      elem = document.getElementById(id);
-      elem.style.backgroundColor = getColor(1 - td2val / maxValue);
+        .append(temp)
+      );
+      /*
+      if (colored) {
+        elem = document.getElementById(id);
+        elem.style.colored = 'red';
+      }*/
+      tdIndex++;
     }
-    tdIndex++;
-  */

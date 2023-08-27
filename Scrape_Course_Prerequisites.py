@@ -21,22 +21,24 @@ from alive_progress import alive_bar
 
 # start by defining the options 
 options = webdriver.ChromeOptions() 
-options.headless = True
+#options.headless = True
+options.add_argument("--headless=new")
 options.page_load_strategy = 'none' 
 
-
 chrome_path = os.getcwd() + "\\chromedriver.exe"
-chrome_path = r"C:\Users\victo\Downloads\chromedriver_win32\chromedriver.exe"
+#chrome_path = r"C:\Users\victo\Downloads\chromedriver_win32\chromedriver.exe"
 chrome_service = Service(chrome_path) 
 
-
 # pass the defined options and service objects to initialize the web driver 
-driver = Chrome(executable_path = chrome_path, options=options)  #, service=chrome_service
+driver = Chrome(service = chrome_service, options=options)  #, service=chrome_service
 driver.implicitly_wait(5)
 
 file_courseNumbers = open('courseNumbers.txt','r')
 courseNumbers = file_courseNumbers.read().split(',')
 file_courseNumbers.close()
+
+# Only use below for testing or single course DBs
+#courseNumbers = ['01002']
 
 # Comment out if the script should not override the previous version every time
 courseDic = {}
@@ -44,6 +46,8 @@ for courseNumber in courseNumbers:
     courseDic[courseNumber] = {}
     courseDic[courseNumber]['Recommended for'] = []
     courseDic[courseNumber]['Mandatory for'] = []
+    courseDic[courseNumber]['Danish title'] = ""
+    courseDic[courseNumber]['English title'] = ""
 
 courses_nonexistant = []
 n_courses_nonexistant = 0
@@ -51,21 +55,14 @@ n_courses_nonexistant = 0
 errors = []
 n_errors = 0
 
-#courseNumbers = ['01005']
-#courseNumber = '01005'
+
 with alive_bar(len(courseNumbers)) as bar:
     for courseNumber in courseNumbers:
         url = "https://kurser.dtu.dk/course/" + courseNumber
 
         driver.get(url) 
         #time.sleep(10)
-
-        try:
-            header_content = driver.find_element(By.CSS_SELECTOR, "div[class*='col-xs-8']")
-            courseDic[courseNumber]['Danish title'] = header_content.find_elements(By.CSS_SELECTOR,"h2")[0].text[6:]
-        except:
-            n_errors += 1
-            errors.append(courseNumber + ": Header fetch error")
+        
         try:
             content = driver.find_element(By.CSS_SELECTOR, "div[class*='box information'")
             table_contents = []
@@ -80,24 +77,39 @@ with alive_bar(len(courseNumbers)) as bar:
 
                 if (row_content[0].lower() == 'engelsk titel'):
                     courseDic[courseNumber]['English title'] = row_content[1]
+                    
+                if (row_content[0].lower() == 'danish title'):
+                    courseDic[courseNumber]['Danish title'] = row_content[1]
 
-                if ('forudsætninger' in row_content[0].lower()):
+                if (('forudsætninger' in row_content[0].lower()) or ('prerequisites' in row_content[0].lower()) ):
                     list_str_content = re.split(',|/| |\.|;|-|\(|\)', row_content[1])
 
                     for str_content in list_str_content:
 
                         if (len(str_content) == 5 and len(re.findall(r'\d+', str_content)) > 0):
-                            if ('anbefalede forudsætninger' == row_content[0].lower() and str_content not in recommendedPrerequisites):
+                            if (('anbefalede forudsætninger' == row_content[0].lower() or 'recommended prerequisites' == row_content[0].lower()) and str_content not in recommendedPrerequisites):
                                 recommendedPrerequisites.append(str_content)
-                            if ('obligatoriske forudsætninger' == row_content[0].lower() and str_content not in mandatoryPrerequisites):
+                            if (('obligatoriske forudsætninger' == row_content[0].lower() or 'mandatory prerequisites' == row_content[0].lower()) and str_content not in mandatoryPrerequisites):
                                 mandatoryPrerequisites.append(str_content)
             
-            courseDic[courseNumber] = {"Recommended prerequisites": recommendedPrerequisites,
-                                       "Mandatory prerequisites": mandatoryPrerequisites}
-            
+            #courseDic[courseNumber] = {"Recommended prerequisites": recommendedPrerequisites,
+            #                           "Mandatory prerequisites": mandatoryPrerequisites}
+            courseDic[courseNumber]["Recommended prerequisites"] = recommendedPrerequisites
+            courseDic[courseNumber]["Mandatory prerequisites"] = mandatoryPrerequisites
+    
         except:
             n_errors += 1
             errors.append(courseNumber + ": box information error")
+        
+        try:
+            header_content = driver.find_element(By.CSS_SELECTOR, "div[class*='col-xs-8']")
+            if (courseDic[courseNumber]['English title'] == ''):
+                courseDic[courseNumber]['English title'] = header_content.find_elements(By.CSS_SELECTOR,"h2")[0].text[6:]
+            else:
+                courseDic[courseNumber]['Danish title'] = header_content.find_elements(By.CSS_SELECTOR,"h2")[0].text[6:]
+        except:
+            n_errors += 1
+            errors.append(courseNumber + ": Header fetch error")
             
         bar.title("errors: " + str(n_errors) + '\n')
         bar()

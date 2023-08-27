@@ -28,7 +28,6 @@
     "default_icon": "images/icon_128.png"
   },
   "permissions": [
-    "tabs",
     "activeTab"
   ]
 }

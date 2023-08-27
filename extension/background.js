@@ -6,14 +6,11 @@ https://github.com/SMKIDRaadet/dtu-course-analyzer/blob/master/README.md
 Date: 19/07-2023
 */
 
-//importScripts('js/jquery.js');
 import { data } from './db/data.js'
 
-console.log("runnung");
-chrome.runtime.onMessage.addListener(parseMessage); // FFROM MANIFEST V2
-console.log("got passed message");
-//chrome.runtime.onActivated.addListener(parseMessage); // MANIFEST V3
-
+console.log("running");
+chrome.runtime.onMessage.addListener(parseMessage); 
+console.log("got parsed message");
 
 function parseMessage(request, sender, sendResponse) {
 	let course=request.getInfo
@@ -33,21 +30,8 @@ function parseMessage(request, sender, sendResponse) {
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, async function(tabs) {
 		//const {data} = await chrome.storage.local.get(["data"])
 		chrome.tabs.sendMessage(rtab,resp);
-		
-		//chrome.runtime.sendMessage(rtab, resp);
+
 	});
 	console.log("parsed message");
 }
 
-/*
-chrome.action.onActivated.addListener((tab) => {
-	chrome.scripting.executeScript({
-	  target: {tabId: tab.id},
-	  files: ['contentscript.js']
-	});
-  });
-*/
-
-chrome.action.onClicked.addListener(function(tab) {
-	chrome.tabs.create({ url: chrome.runtime.getURL('db.html') });
-});
