@@ -16,7 +16,6 @@ function parseMessage(request, sender, sendResponse) {
 	let course=request.getInfo
 	let rtab=sender.tab.id
 	
-	console.log();
 	var resp={};
 	if(course in data){
 		resp[course]=data[course]
@@ -26,12 +25,12 @@ function parseMessage(request, sender, sendResponse) {
 		resp[course]=false
 		//chrome.storage.local.set(data[course]);
 	}
+
+	resp = data;
 	console.log("parsing message:", resp);
 	chrome.tabs.query({active: true, lastFocusedWindow: true}, async function(tabs) {
 		//const {data} = await chrome.storage.local.get(["data"])
 		chrome.tabs.sendMessage(rtab,resp);
 
 	});
-	console.log("parsed message");
 }
-

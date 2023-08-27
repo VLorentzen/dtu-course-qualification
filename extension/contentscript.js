@@ -32,8 +32,8 @@ chrome.runtime.onMessage.addListener(listen);
                                         
 function listen(request, sender, sendResponse) {
   console.log("Attempting to add listener");
-  if (request[course]) {
-    presentData(request[course]);
+  if (request) {
+    presentData(request);
   }
   console.log("Added listener");
 }
@@ -47,24 +47,29 @@ function presentData(data) {
   $(".box.information > table")
     .last()
     .before($("<table/>").append($("<tbody/>", { id: "DTU-Course-Qualification" })));
-    //addRow($("<span/>").text("—DTU Course Qualification—"));
   
-  if (data) {
+  if (data[course]) {
     for (i = 0; i < outputArr.length; i++) {
       key = outputArr[i][1];
-      val = data[key];
-      //courseNames = data['English title'];
+      val = data[course][key];
+      courseNames = [];
+
+      for (j = 0; j < val.length; j++){
+        courseNames = courseNames.concat([data[val[j]]['English title']]);
+      }
+      console.log("Here are the course names...");
+      console.log(courseNames);
 
       console.log("Checking if list is empty... ");
       console.log(val.length);
       console.log("Here's what's in val...");
       console.log(val);
 
-      if (val.length >= 1) {// typeof val != "undefined" && !isNaN(val) && outputArr[i][3] != []
+      if (val.length >= 1) {
         addRowWithHref(
           $("<span/>", { text: outputArr[i][0] }),
           val,
-          courseName
+          courseNames
         );
       }
     }
@@ -75,10 +80,10 @@ function presentData(data) {
     $("<a/>", {
       href: "https://github.com/Extrillo/dtu-course-qualification/tree/main",
       target: "_blank",
-    }).append($("<label/>", { text: "help..." }))
+    }).append($("<label/>", { text: "Further courses..?", title: 'DTU Course Qualification adds "prerequisite for courses" to course information' }))
   );
 }
-  
+
 var tdIndex = 0;
   
 function addRow(
@@ -98,26 +103,22 @@ function addRow(
           $("<td/>").append($("<span/>", { id: id, text: td2val + unitText }))
         )
     );
-  
-    if (colored) {
-      elem = document.getElementById(id);
-      elem.style.backgroundColor = getColor(1 - td2val / maxValue);
-    }
     tdIndex++;
   }
 
   function addRowWithHref(
     td1Elem,
     td2val = "",
-    courseName = "",
+    courseNames = "",
     colored = true,
     maxValue = 1
     ) 
     {
       id = "dca-td-" + tdIndex;
+
       temp = $("<td/>")
       for (i = 0; i < td2val.length; i++) {
-        temp.append($("<a/>", { id: id, text: td2val[i], href: "https://kurser.dtu.dk/course/" + td2val[i] }))
+        temp.append($("<a/>", { id: id, text: td2val[i], href: "https://kurser.dtu.dk/course/" + td2val[i], title: courseNames[i] }))
         if (i < td2val.length -1 ){
           temp.append($("<span/>",{text:", "}))
         }
@@ -128,10 +129,6 @@ function addRow(
         .append($("<td/>").append($("<b/>").append(td1Elem)))
         .append(temp)
       );
-      /*
-      if (colored) {
-        elem = document.getElementById(id);
-        elem.style.colored = 'red';
-      }*/
+
       tdIndex++;
     }
