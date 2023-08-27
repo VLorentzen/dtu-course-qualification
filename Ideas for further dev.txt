@@ -1,8 +1,0 @@
-To be done:
-- Update from Manifest: 2 to Manifest: 3
-- Add hyperlinks to course numbers when displayed
-- Fix Danish/English titles in the courseDic (in the scraper)
-- Add bubble with course name depending on danish or english page
-- Change "Mandatory" to "Obligatorisk" if page is displayed in danish (and vice versa for english)
-- Clean up ReadMe and add documentation
-- Remove duplicates from prerequisite for and mandatory for
