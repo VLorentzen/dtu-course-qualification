@@ -21,16 +21,16 @@ from alive_progress import alive_bar
 
 # start by defining the options 
 options = webdriver.ChromeOptions() 
-#options.headless = True
 options.add_argument("--headless=new")
 options.page_load_strategy = 'none' 
 
 chrome_path = os.getcwd() + "\\chromedriver.exe"
-#chrome_path = r"C:\Users\victo\Downloads\chromedriver_win32\chromedriver.exe"
-chrome_service = Service(chrome_path) 
+
+#chrome_service = Service(chrome_path) 
 
 # pass the defined options and service objects to initialize the web driver 
-driver = Chrome(service = chrome_service, options=options)  #, service=chrome_service
+#driver = Chrome(service = chrome_service, options=options)  #, service=chrome_service
+driver = Chrome(executable_path = chrome_path, options=options)  #, service=chrome_service
 driver.implicitly_wait(5)
 
 file_courseNumbers = open('courseNumbers.txt','r')
@@ -38,7 +38,7 @@ courseNumbers = file_courseNumbers.read().split(',')
 file_courseNumbers.close()
 
 # Only use below for testing or single course DBs
-#courseNumbers = ['01002']
+#courseNumbers = ['01002','01035']
 
 # Comment out if the script should not override the previous version every time
 courseDic = {}
@@ -87,7 +87,7 @@ with alive_bar(len(courseNumbers)) as bar:
                     for str_content in list_str_content:
 
                         if (len(str_content) == 5 and len(re.findall(r'\d+', str_content)) > 0):
-                            if (('anbefalede forudsætninger' == row_content[0].lower() or 'recommended prerequisites' == row_content[0].lower()) and str_content not in recommendedPrerequisites):
+                            if (('Faglige forudsætninger' == row_content[0].lower() or 'academic prerequisites' in row_content[0].lower()) and str_content not in recommendedPrerequisites):
                                 recommendedPrerequisites.append(str_content)
                             if (('obligatoriske forudsætninger' == row_content[0].lower() or 'mandatory prerequisites' == row_content[0].lower()) and str_content not in mandatoryPrerequisites):
                                 mandatoryPrerequisites.append(str_content)
@@ -132,7 +132,7 @@ for courseNumber in courseNumbers:
                     courses_nonexistant.append(course_to_modify)
                     n_courses_nonexistant += 1
                     
-print("Found " + str(n_errors) + " in following courses:")
+#print("Found " + str(n_errors) + " in following courses:")
 print(errors)
     
 json.dump(courseDic, open('courseDic.json','w'))
