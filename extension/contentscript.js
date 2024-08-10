@@ -80,7 +80,7 @@ function presentData(data) {
     $("<a/>", {
       href: "https://github.com/Extrillo/dtu-course-qualification/tree/main",
       target: "_blank",
-    }).append($("<label/>", { text: "Further courses..?", title: 'DTU Course Qualification adds "prerequisite for courses" to course information' }))
+    }).append($("<label/>", { text: "help", title: 'DTU Course Qualification adds "prerequisite for courses" to course information' }))
   );
 }
 
