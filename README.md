@@ -1,11 +1,13 @@
 # dtu-course-qualification
 ## Description
-This solution attempts to provide DTU course takers with visibility for not just which courses are prerequisites for a specific course (already available), but also which courses that specific course is a prerequisite for. Please let me know if anything is out of place, this is just a for fun solo project.
+The DTU Course Qualification Chrome Extension provides information on relevant courses for course takers and students at the Technical University of Denmark, DTU. The course webpages have information on prerequisites for courses, but lack information on which courses could extend the students competencies after taking the course described on the page. With the extension installed, the information is now available directly below the prerequisites called "prerequisite for".
+
+The extension adds the information for course XXXXX on the webpages of form "https://kurser.dtu.dk/course/XXXXX" and "https://kurser.dtu.dk/course/YYYY-YYYY/XXXXX", where XXXXX is a 5-digit coursenumber and YYYY-YYYY is the coming academic year interval. 
 
 ## Contact Information
-Solution is redacted so no contact information.
+lorentzen.productions@gmail.com
 
-## References and thanks to
+## Thanks to
 dtu-course-analyzer for the inspiration:
 https://github.com/SMKIDRaadet/dtu-course-analyzer/blob/master/README.md
 
